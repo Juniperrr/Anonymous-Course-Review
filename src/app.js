@@ -12,7 +12,8 @@ const Reviews = require("./model");
 const app = express();
 
 // app.use(express.static('public'));
-['public', 'css', 'img'].forEach(folder => app.use(express.static(__dirname + '/' + folder)));
+['css', 'img'].forEach(folder => app.use(express.static(__dirname + '/../public/' + folder)));
+console.log(__dirname + '/public/');
 // tell the template engine where to find our (templated) html
 app.set('views', path.join(__dirname, 'views'));
 // use handlebars as the templating engine. Express can support most popular templating engines:
