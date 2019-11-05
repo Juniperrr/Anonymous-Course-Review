@@ -9,11 +9,12 @@ const session = require('express-session');
 const config = require('../config.json');
 const db = require('./db');
 const Reviews = require("./model");
+
 const app = express();
 
 // app.use(express.static('public'));
 ['css', 'img'].forEach(folder => app.use(express.static(__dirname + '/../public/' + folder)));
-console.log(__dirname + '/public/');
+//console.log(__dirname + '/public/');
 // tell the template engine where to find our (templated) html
 app.set('views', path.join(__dirname, 'views'));
 // use handlebars as the templating engine. Express can support most popular templating engines:
@@ -31,11 +32,16 @@ const sessionOptions = {
 	resave: false
 };
 app.use(session(sessionOptions));
+//***************************************************************** */
+
+//Identify the user of this session & count the number of views (pages) loaded
 app.use(function(req, res, next) {
     console.log('req.query', req.query); // BEWARE: Anything i try to search!!
+    //Identifying the user of this session
     res.locals.user = req.user;
     // res.locals.authenticated = ! req.user.anonymous;
-    console.log(req.user);
+    //console.log(req.user);
+    //Start counting the number of sessions
     if (req.session.timesAccessed === undefined) {
         req.session.timesAccessed = 1;
     } else {
@@ -46,11 +52,15 @@ app.use(function(req, res, next) {
     // res.locals.timesAccessed = req.session.timesAccessed;
     next();
 });
+
+//Logs out the value associated with the Cookie header on every request
 app.use((req, res, next) => {
     console.log('cookies', req.get('cookie'));
     console.log('req.headers', req.headers);
     next();
 });
+
+//Search items via form (if searched for nothing, then output everything)
 app.get('/', (req, res) => {
     const queryObj = {};
     if (req.query.yearQ) {
@@ -70,6 +80,8 @@ app.get('/', (req, res) => {
         res.render('home', {found: found, timesAccessed: req.session.timesAccessed});
     });
 });
+
+//Add a new data through form
 app.post('/reviews/add', (req, res) => {
     const rev = req.body;
     rev.sid = req.session.id;
@@ -80,10 +92,13 @@ app.post('/reviews/add', (req, res) => {
         res.redirect('/');
     });
 });
+
+//Load "add" page
 app.get('/reviews/add', (req,res) => {
     res.render('add');
 });
 
+//Load ""make-a-cookie" page
 app.get('/make-a-cookie', function(req, res) {
     // used append so that we can Set-Cookie more than once
     res.append('Set-Cookie', 'MY_SESSION_ID=123; HttpOnly');
@@ -91,6 +106,7 @@ app.get('/make-a-cookie', function(req, res) {
     res.send('made you a cookie');
 });
 
+//Load my reviews only using req.session.id
 app.get('/reviews/mine', (req, res) => {
     Reviews.find({sid: req.session.id}, (err, found, count) => {
         if (err) {
