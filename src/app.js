@@ -95,7 +95,7 @@ app.post('/reviews/add', (req, res) => {
 
 //Load "add" page
 app.get('/reviews/add', (req,res) => {
-    res.render('add');
+    res.render('add', {timesAccessed: req.session.timesAccessed});
 });
 
 //Load ""make-a-cookie" page
