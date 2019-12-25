@@ -1,0 +1,5 @@
+{
+  "title": "# Reviews made awesome",
+  "port": 3000,
+  "dbconf": "mongodb://student:secret@localhost:27017/hw05"
+}

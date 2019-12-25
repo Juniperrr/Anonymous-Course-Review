@@ -1,0 +1,53 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2509
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fswiss\fcharset0 Helvetica;\f2\fnil\fcharset0 Menlo-Regular;
+\f3\fnil\fcharset0 Menlo-Bold;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgray\c0;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs26 \cf0 MongoDB User authentication\
+
+\f1\b0\fs24 \
+
+\f0\b \{\{ Start mongo shell & create mongoDB instance \}\}\
+
+\f1\b0 1. 
+\f2\fs22 \cf2 \CocoaLigature0 brew services stop mongodb-community@4.2\
+2. brew services start mongodb-community@4.2\
+3. mongo\
+\
+
+\f3\b \{\{ Create admin user \}\}\
+
+\f2\b0 4. use admin\
+5. db.createUser(\{user: "myUserAdmin", pwd: passwordPrompt(), roles: [ \{ role: "userAdminAnyDatabase", db: "admin" \}, "readWriteAnyDatabase" ]\})\
+\
+
+\f3\b \{\{ Exit mongoDB instance & mongo shell; Require client authentication \}\}\
+
+\f2\b0 6. Control + C 	// shut down mongoDB instance\
+7. brew services stop mongodb-community@4.2 	// eat mongo shell\
+8. brew services start mongodb-community@4.2 --auth\
+7. mongo --port 27017  --authenticationDatabase "admin" -u "myUserAdmin" -p\
+\
+
+\f3\b \{\{ Create additional users \}\}\
+
+\f2\b0 8. use test\
+9. db.createUser(\{user: "newUser2", pwd: passwordPrompt(), roles: [\{role: "readWrite",db: "test"\},\{role: "read", db: "reporting"\}]\})\
+\
+
+\f3\b \{\{ Exit mongoDB instance; Require client authentication \}\}\
+
+\f2\b0 10. Control + C\
+11. mongo --port 27017 -u "newUser2" --authenticationDatabase "test" -p\
+\
+
+\f3\b \{\{ Insert data into collections; display \}\}\
+
+\f2\b0 12. db.foo.insert( \{ x: 1, y: 1 \} )\
+13. db.foo.find()\
+14. use hw05\
+15. db.reviews.find()\
+16. db.reviews.find().pretty()}
